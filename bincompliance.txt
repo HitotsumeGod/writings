@@ -1,0 +1,55 @@
+Ensuring Language Standard Compliance for Project Binaries
+
+It is a common sentiment today that supremely powerful languages such as C are
+simply too dangerous for the uses they have traditionally been put to. C
+allows for one to shoot oneself in the foot in a variety of vividly hilarious
+ways, none of which are, however, at all attractive to a prospective employer
+or an organization based around producing consistently safe programs. Memory
+safety is the headliner of this topic, and is typically implemented via
+language-level locks and stopgaps, as opposed to general best practice
+recommendations. In other words, the compilers of languages such as Rust
+enforce memory safety within the compilation process itself, ensuring
+absolute conformance to language standards. This can be extremely attarctive
+for organizations that wish to free their developers from the oh-so
+destructive influence of free thinking, but a problem still remains. How do you
+ensure that your developers are actually using the right compiler?
+
+This paper intends to solve the above issue by demonstrating a simple and
+elegant method by which a development cycle may be one hundred percent
+certain about the validity of a presented binary.
+
+Our goal is the logical linking of a compiled binary and the compiler that
+produced it, such that if either were to be altered in even the most
+inconsequential way (i.e. a single bit flip), the link-relationship
+would break down. To this end, we use one of the coolest things ever
+created by human beings: a cryptographic hash function. An algorithm such
+as SHA-256 or SHA-512 allows us to generate a uniquely powerful
+representation of binary program, but such a function's true utility comes
+in its ability to do so to data arbitrarily. Thus we may actually have such
+a hash function operate not on a single binary program, but on two distinct
+ones, not as individual programs, but as a single contiguous chunk of data.
+Such a computation would produce a digest perfectly representing the interplay
+of both binary programs, logically linking them together. 
+
+Thus, if one wished to enforce language-specification adherence in one's
+software company, a process such as the following could be established:
+1) When a compiler C compiles a program, it also outputs a hash digest
+    calculated from the contiguous data space of both the compiler and
+    the compiled binary B. Any change to *either* the compiler or the binary
+    would then produce an entirely different digest.
+2) To submit the binary B to a github repo, one would also be required to
+    submit the compiler-produced digest, as well as an identifier for the 
+    compiler used (such as a version number). One might then even automate
+    the git host platform to immediately calculate the compiler-binary digest
+    using its own instance of the referenced compiler, and reject the submitted
+    binary if its inclusion did not produce the same digest.
+
+By including the compiler itself in the hash function, we foundationally
+mandate the language-standards that we hoped we could enforce, since an
+different or modified compiler will not hash to the same value (and a legal
+compiler version number or reference must be provided), but a legal compiler
+would be constructed to always enforce the language-standards. The only
+conceivable way to circumvent this strategy, then, is to follow in the
+footsteps of the Lazarus Group's BYOVD strategy, and actually convince your
+organization to accept a modified compiler into the ecosystem, thus allowing
+it as a legal compiler for compiling and hashing.
